@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f8f6">
+  <title>Nova Salud | Gestión de botica</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <section class="login-screen" id="login-screen" hidden>
+    <div class="login-art">
+      <a class="brand brand-light" href="#"><span class="brand-mark">✚</span><span>nova<span class="brand-name-light">salud</span></span></a>
+      <div class="login-art-copy">
+        <span class="eyebrow">BOTICA · GESTIÓN INTELIGENTE</span>
+        <h1>Tu botica,<br>en buenas manos.</h1>
+        <p>Inventario claro, atención rápida y cada venta bajo control.</p>
+        <div class="login-pills"><span>✦ &nbsp;Stock en tiempo real</span><span>♡ &nbsp;Cuidamos lo que importa</span></div>
+      </div>
+      <span class="login-art-footer">UN NUEVO DÍA PARA CUIDAR MEJOR</span>
+    </div>
+    <div class="login-panel">
+      <div class="auth-tabs" role="tablist" aria-label="Acceso al sistema">
+        <button class="auth-tab active" id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-form" data-auth-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" id="register-tab" type="button" role="tab" aria-selected="false" aria-controls="register-form" data-auth-tab="register">Crear cuenta</button>
+      </div>
+      <form class="login-form" id="login-form">
+        <span class="eyebrow">BIENVENIDO DE VUELTA</span>
+        <h2>Inicia sesión</h2>
+        <p>Ingresa a tu espacio de trabajo.</p>
+        <label for="login-user">Usuario</label>
+        <input id="login-user" name="username" autocomplete="username" value="admin" required>
+        <label for="login-password">Contraseña</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña" required>
+        <p class="form-error" id="login-error" role="alert"></p>
+        <button class="button button-primary button-wide" type="submit">Ingresar <span>→</span></button>
+        <span class="login-hint">Acceso de demostración: admin / NovaSalud2026!</span>
+      </form>
+      <form class="login-form" id="register-form" hidden>
+        <span class="eyebrow">PERSONAL DE LA BOTICA</span>
+        <h2>Crear una cuenta</h2>
+        <p>Registra un usuario vendedor para acceder al sistema.</p>
+        <label for="register-name">Nombre completo</label>
+        <input id="register-name" name="name" autocomplete="name" maxlength="80" required placeholder="Ej. Ana Pérez">
+        <label for="register-user">Nombre de usuario</label>
+        <input id="register-user" name="username" autocomplete="username" autocapitalize="none" minlength="3" maxlength="30" pattern="[A-Za-z0-9._\x2d]{3,30}" required placeholder="Ej. ana.perez">
+        <small class="field-hint">De 3 a 30 caracteres: letras, números, punto, guion o guion bajo.</small>
+        <label for="register-password">Contraseña</label>
+        <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="10" maxlength="128" required placeholder="Mínimo 10 caracteres">
+        <label for="register-password-confirm">Confirmar contraseña</label>
+        <input id="register-password-confirm" name="passwordConfirm" type="password" autocomplete="new-password" minlength="10" maxlength="128" required placeholder="Repite la contraseña">
+        <div class="role-notice"><span>✓</span><span><strong>Rol asignado: Vendedor</strong><small>El rol Administrador no está disponible en el registro.</small></span></div>
+        <p class="form-error" id="register-error" role="alert"></p>
+        <button class="button button-primary button-wide" type="submit">Crear cuenta y entrar <span>→</span></button>
+      </form>
+    </div>
+  </section>
+
+  <div class="app-shell" id="app-shell" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="Nova Salud, inicio"><span class="brand-mark">✚</span><span>nova<span class="brand-name-light">salud</span></span></a>
+      <div class="branch-switch"><span class="branch-dot"></span><span><strong>Botica principal</strong><small>Local · Lima Centro</small></span><span class="chevron">⌄</span></div>
+      <span class="nav-caption">MENÚ PRINCIPAL</span>
+      <nav class="main-nav" aria-label="Menú principal">
+        <button class="nav-link active" data-view="dashboard"><span class="nav-icon">⌂</span> Resumen</button>
+        <button class="nav-link" data-view="inventory"><span class="nav-icon">▤</span> Inventario <span class="nav-badge" id="nav-alert-count">0</span></button>
+        <button class="nav-link" data-view="sales"><span class="nav-icon">＋</span> Nueva venta</button>
+        <button class="nav-link" data-view="history"><span class="nav-icon">◷</span> Historial de ventas</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><span class="help-icon">✳</span><strong>¿Necesitas ayuda?</strong><p>Estamos aquí para ayudarte a cuidar mejor.</p><button id="help-button">Centro de ayuda <span>→</span></button></div>
+        <button class="profile-button" id="logout-button"><span class="avatar" id="profile-avatar">NS</span><span class="profile-info"><strong id="profile-name">Administrador</strong><small id="profile-role">Administrador</small></span><span class="profile-menu">⋯</span></button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Abrir menú">☰</button>
+        <div class="breadcrumbs">Nova Salud <span>/</span> <strong id="breadcrumb-current">Resumen</strong></div>
+        <div class="topbar-actions"><span class="today-label" id="today-label"></span><button class="icon-button notification-button" aria-label="Notificaciones">♧<i></i></button><span class="top-avatar" id="top-avatar">NS</span></div>
+      </header>
+
+      <div class="page-content">
+        <section class="view active" id="view-dashboard">
+          <div class="welcome-row">
+            <div><span class="eyebrow" id="dashboard-date"></span><h1>Buenos días, equipo <span class="wave">✦</span></h1><p>Esto es lo que está pasando hoy en tu botica.</p></div>
+            <button class="button button-primary" data-go="sales"><span>＋</span> Nueva venta</button>
+          </div>
+          <div class="metrics-grid">
+            <article class="metric-card"><div class="metric-top"><span>Ventas de hoy</span><span class="metric-icon green-icon">↗</span></div><strong id="metric-revenue">S/ 0.00</strong><div class="metric-foot"><span class="metric-muted">Ingresos registrados</span></div></article>
+            <article class="metric-card"><div class="metric-top"><span>Atenciones</span><span class="metric-icon violet-icon">♧</span></div><strong id="metric-sales">0</strong><div class="metric-foot"><span class="metric-muted">Ventas completadas hoy</span></div></article>
+            <article class="metric-card"><div class="metric-top"><span>Productos activos</span><span class="metric-icon blue-icon">▤</span></div><strong id="metric-products">0</strong><div class="metric-foot"><span class="metric-muted">En catálogo</span></div></article>
+            <article class="metric-card"><div class="metric-top"><span>Por reponer</span><span class="metric-icon amber-icon">⌁</span></div><strong id="metric-lowstock">0 <small>productos</small></strong><div class="metric-foot"><span class="metric-warning">Requieren atención</span></div></article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel sales-chart-panel">
+              <div class="panel-heading"><div><h2>Rendimiento de ventas</h2><p>Un vistazo a la actividad de tu botica</p></div><select class="select-small" aria-label="Periodo"><option>Esta semana</option><option>Este mes</option></select></div>
+              <div class="chart-summary"><strong id="chart-revenue">S/ 0.00</strong><small id="chart-period">Ventas registradas esta semana</small></div>
+              <div class="chart-area"><div class="chart-y-labels" id="chart-y-labels"></div><div class="chart-plot"><div class="grid-lines"><i></i><i></i><i></i><i></i><i></i></div><div class="bars" id="sales-bars"></div></div></div>
+            </article>
+            <article class="panel alerts-panel">
+              <div class="panel-heading"><div><h2>Necesitan atención</h2><p>Productos con stock bajo</p></div><span class="alert-counter" id="alert-counter">0</span></div>
+              <div class="alert-list" id="alert-list"></div>
+              <button class="text-button" data-go="inventory">Ver inventario completo <span>→</span></button>
+            </article>
+          </div>
+
+          <article class="panel recent-panel">
+            <div class="panel-heading"><div><h2>Últimas ventas</h2><p>Actividad reciente de tu equipo</p></div><button class="text-button" data-go="history">Ver todas <span>→</span></button></div>
+            <div class="table-wrap"><table><thead><tr><th>VENTA</th><th>CLIENTE</th><th>PRODUCTOS</th><th>MEDIO DE PAGO</th><th>HORA</th><th class="right">TOTAL</th></tr></thead><tbody id="recent-sales-body"></tbody></table></div>
+          </article>
+          <footer class="page-footer"><span>Nova Salud · Cuidamos de ti, cuidamos de todos.</span><span>Datos actualizados en tiempo real <i class="live-dot"></i></span></footer>
+        </section>
+
+        <section class="view" id="view-inventory">
+          <div class="page-heading"><div><span class="eyebrow">CONTROL DE STOCK</span><h1>Inventario</h1><p>Gestiona tus productos, lotes y niveles de reposición.</p></div><button class="button button-primary" id="toggle-product-form"><span>＋</span> Agregar producto</button></div>
+          <form class="panel product-form" id="product-form" hidden>
+            <div class="panel-heading"><div><h2>Nuevo producto</h2><p>Completa la información para agregarlo al catálogo.</p></div><button class="icon-button close-form" type="button" aria-label="Cerrar">×</button></div>
+            <div class="form-grid">
+              <label>Nombre del producto<input name="name" required maxlength="100" placeholder="Ej. Paracetamol 500 mg"></label>
+              <label>Categoría<select name="category"><option>Medicamentos</option><option>Antibióticos</option><option>Cuidado personal</option><option>Vitaminas</option><option>Otros</option></select></label>
+              <label>Precio (S/)<input name="price" type="number" step="0.01" min="0.01" required placeholder="0.00"></label>
+              <label>Stock inicial<input name="stock" type="number" min="0" step="1" required placeholder="0"></label>
+              <label>Alerta de stock mínimo<input name="minStock" type="number" min="0" step="1" value="10" required></label>
+              <label>Número de lote<input name="lot" maxlength="40" placeholder="Opcional"></label>
+              <label>Fecha de vencimiento<input name="expiry" type="date"></label>
+              <label>Código de barras<input name="barcode" maxlength="40" placeholder="Opcional"></label>
+            </div>
+            <div class="form-actions"><span class="form-error" id="product-error" role="alert"></span><button class="button button-secondary close-form" type="button">Cancelar</button><button class="button button-primary" type="submit">Guardar producto</button></div>
+          </form>
+          <div class="inventory-stats"><div><span>Todos los productos</span><strong id="inventory-total">0</strong></div><div><span>Stock bajo</span><strong class="text-orange" id="inventory-low">0</strong></div><div><span>Categorías</span><strong id="inventory-categories">0</strong></div><div><span>Por vencer (90 días)</span><strong class="text-orange" id="inventory-expiring">0</strong></div></div>
+          <article class="panel inventory-panel">
+            <div class="inventory-toolbar"><div class="search-box"><span>⌕</span><input id="inventory-search" placeholder="Buscar por nombre o código..." aria-label="Buscar productos"></div><select class="filter-select" id="stock-filter" aria-label="Filtrar por estado"><option value="all">Todos los productos</option><option value="low">Stock bajo</option><option value="ok">Stock suficiente</option></select></div>
+            <div class="table-wrap"><table><thead><tr><th>PRODUCTO</th><th>CATEGORÍA</th><th>LOTE</th><th>VENCIMIENTO</th><th>STOCK ACTUAL</th><th>PRECIO</th><th>ESTADO</th><th>ACCIÓN</th></tr></thead><tbody id="inventory-body"></tbody></table></div>
+            <div class="table-bottom"><span id="inventory-showing">Mostrando 0 productos</span><span>Actualizado en tiempo real <i class="live-dot"></i></span></div>
+          </article>
+          <footer class="page-footer"><span>Nova Salud · Cuidamos de ti, cuidamos de todos.</span><span>Datos actualizados en tiempo real <i class="live-dot"></i></span></footer>
+        </section>
+
+        <section class="view" id="view-sales">
+          <div class="page-heading"><div><span class="eyebrow">ATENCIÓN ÁGIL Y SEGURA</span><h1>Nueva venta</h1><p>Agrega los productos y registra la atención del cliente.</p></div><span class="secure-note"><i class="live-dot"></i> Stock sincronizado</span></div>
+          <div class="sale-layout">
+            <article class="panel sale-products">
+              <div class="panel-heading"><div><h2>Selecciona productos</h2><p>Busca en el catálogo para agregar al pedido.</p></div></div>
+              <div class="search-box sale-search"><span>⌕</span><input id="sale-search" placeholder="Nombre o código de producto..." aria-label="Buscar producto para venta"></div>
+              <div class="sale-product-list" id="sale-product-list"></div>
+            </article>
+            <article class="panel cart-panel">
+              <div class="panel-heading"><div><h2>Detalle de venta</h2><p id="cart-count">0 productos</p></div><span class="cart-icon">▣</span></div>
+              <label class="customer-label" for="sale-customer">Cliente <span>· Opcional</span></label>
+              <input class="customer-input" id="sale-customer" maxlength="100" placeholder="Nombre del cliente">
+              <div class="cart-items" id="cart-items"><div class="empty-cart"><span>▧</span><strong>Tu venta está vacía</strong><small>Agrega productos del catálogo para comenzar.</small></div></div>
+              <div class="cart-summary"><div><span>Subtotal</span><strong id="cart-subtotal">S/ 0.00</strong></div><div><span>IGV incluido</span><span id="cart-tax">S/ 0.00</span></div><div class="cart-total"><span>Total a pagar</span><strong id="cart-total">S/ 0.00</strong></div></div>
+              <label class="customer-label payment-label" for="payment-method">Medio de pago</label>
+              <select class="customer-input" id="payment-method"><option>Efectivo</option><option>Yape / Plin</option><option>Tarjeta</option></select>
+              <p class="form-error" id="sale-error" role="alert"></p>
+              <button class="button button-primary button-wide checkout-button" id="checkout-button">Registrar venta <span>→</span></button>
+              <p class="checkout-note">Al registrar, el stock se actualizará automáticamente.</p>
+            </article>
+          </div>
+          <footer class="page-footer"><span>Nova Salud · Cuidamos de ti, cuidamos de todos.</span><span>Datos actualizados en tiempo real <i class="live-dot"></i></span></footer>
+        </section>
+
+        <section class="view" id="view-history">
+          <div class="page-heading"><div><span class="eyebrow">ACTIVIDAD DE LA BOTICA</span><h1>Historial de ventas</h1><p>Consulta las operaciones registradas en tu punto de venta.</p></div><button class="button button-primary" data-go="sales"><span>＋</span> Nueva venta</button></div>
+          <div class="inventory-stats"><div><span>Ventas registradas</span><strong id="history-count">0</strong></div><div><span>Ingresos registrados</span><strong id="history-revenue">S/ 0.00</strong></div><div><span>Medio más usado</span><strong id="history-payment">—</strong></div></div>
+          <article class="panel recent-panel">
+            <div class="inventory-toolbar"><div class="search-box"><span>⌕</span><input id="history-search" placeholder="Buscar por cliente o número de venta..." aria-label="Buscar ventas"></div><span class="secure-note">Ventas registradas <i class="live-dot"></i></span></div>
+            <div class="table-wrap"><table><thead><tr><th>VENTA</th><th>FECHA Y HORA</th><th>CLIENTE</th><th>PRODUCTOS</th><th>MEDIO DE PAGO</th><th class="right">TOTAL</th></tr></thead><tbody id="history-body"></tbody></table></div>
+          </article>
+          <footer class="page-footer"><span>Nova Salud · Cuidamos de ti, cuidamos de todos.</span><span>Datos actualizados en tiempo real <i class="live-dot"></i></span></footer>
+        </section>
+      </div>
+    </main>
+  </div>
+  <dialog class="restock-dialog" id="restock-dialog">
+    <form id="restock-form">
+      <span class="eyebrow">ACTUALIZACIÓN DE EXISTENCIAS</span>
+      <h2>Reponer producto</h2>
+      <p id="restock-product-name"></p>
+      <label for="restock-quantity">Unidades recibidas</label>
+      <input id="restock-quantity" name="quantity" type="number" min="1" max="100000" step="1" required placeholder="Ingresa la cantidad">
+      <p class="form-error" id="restock-error" role="alert"></p>
+      <div class="form-actions"><button class="button button-secondary" id="cancel-restock" type="button">Cancelar</button><button class="button button-primary" type="submit">Guardar reposición</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

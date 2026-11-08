@@ -1,0 +1,12 @@
+{
+  "name": "nova-salud",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema web de inventario y ventas para Botica Nova Salud",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
